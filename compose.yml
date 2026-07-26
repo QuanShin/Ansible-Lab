@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    image: demo-frontend:v4
+
+    container_name: demo-frontend
+
+    ports:
+      - "8081:80"
+
+    restart: unless-stopped
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
