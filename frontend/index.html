@@ -6,12 +6,58 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>Docker Training V2</title>
+  <title>Training Microservices</title>
 </head>
 <body>
-  <h1>Docker Training Frontend V2</h1>
-  <p>This source file has been updated.</p>
-  <p>Image version: v2</p>
-  <footer>Docker cache experiment</footer>
+  <h1>Training Microservices</h1>
+
+  <h2>Backend messages</h2>
+  <button id="loadMessages">Load messages</button>
+  <pre id="messages">No data loaded.</pre>
+
+  <h2>WordPress posts</h2>
+  <button id="loadPosts">Load posts</button>
+  <pre id="posts">No data loaded.</pre>
+
+  <script>
+    async function loadJson(url, outputId) {
+      const output = document.getElementById(outputId);
+      output.textContent = "Loading...";
+
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}: ${response.statusText}`
+          );
+        }
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        output.textContent = `Request failed: ${error.message}`;
+        console.error(error);
+      }
+    }
+
+    document
+      .getElementById("loadMessages")
+      .addEventListener("click", () => {
+        loadJson(
+          "/api/messages",
+          "messages"
+        );
+      });
+
+    document
+      .getElementById("loadPosts")
+      .addEventListener("click", () => {
+        loadJson(
+          "/wp-json/posts",
+          "posts"
+        );
+      });
+  </script>
 </body>
 </html>
