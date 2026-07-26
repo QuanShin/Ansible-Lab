@@ -1,0 +1,12 @@
+- name: Deploy database service
+  ansible.builtin.command:
+    cmd: docker compose up -d database
+    chdir: "{{ app_dir }}"
+  register: database_deploy
+  changed_when: >
+    'Created' in database_deploy.stdout or
+    'Recreated' in database_deploy.stdout or
+    'Started' in database_deploy.stdout
+  when: not ansible_check_mode
+  tags:
+    - database

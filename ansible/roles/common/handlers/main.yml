@@ -1,0 +1,6 @@
+- name: Deploy full stack
+  ansible.builtin.command:
+    cmd: docker compose up -d --build --remove-orphans
+    chdir: "{{ app_dir }}"
+  when: not ansible_check_mode
+  changed_when: true

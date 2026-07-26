@@ -1,0 +1,49 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - git
+      - curl
+      - rsync
+    state: present
+    update_cache: true
+  tags:
+    - common
+
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  tags:
+    - common
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+    mode: "0755"
+  tags:
+    - deploy
+
+- name: Copy Compose configuration
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../compose.yml"
+    dest: "{{ app_dir }}/compose.yml"
+    mode: "0644"
+  notify: Deploy full stack
+  tags:
+    - deploy
+    - config
+
+- name: Render application environment
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    mode: "0600"
+  notify: Deploy full stack
+  no_log: true
+  tags:
+    - deploy
+    - config

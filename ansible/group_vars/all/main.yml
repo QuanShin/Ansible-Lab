@@ -1,0 +1,10 @@
+app_dir: /opt/training-microservices
+
+app_db_name: app_db
+app_db_user: app_user
+
+wp_db_name: wordpress_db
+wp_db_user: wordpress_user
+
+backend_image_tag: v1
+frontend_image_tag: v1

@@ -1,0 +1,27 @@
+- name: Create frontend directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/frontend"
+    state: directory
+    mode: "0755"
+  tags:
+    - frontend
+
+- name: Copy frontend source
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../frontend/"
+    dest: "{{ app_dir }}/frontend/"
+    mode: preserve
+  register: frontend_source
+  tags:
+    - frontend
+
+- name: Build and deploy frontend
+  ansible.builtin.command:
+    cmd: docker compose up -d --build frontend
+    chdir: "{{ app_dir }}"
+  when:
+    - frontend_source.changed
+    - not ansible_check_mode
+  changed_when: true
+  tags:
+    - frontend

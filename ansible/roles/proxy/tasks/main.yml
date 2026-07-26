@@ -1,0 +1,27 @@
+- name: Create proxy directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/proxy"
+    state: directory
+    mode: "0755"
+  tags:
+    - proxy
+
+- name: Copy proxy configuration
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../proxy/"
+    dest: "{{ app_dir }}/proxy/"
+    mode: preserve
+  register: proxy_config
+  tags:
+    - proxy
+
+- name: Recreate proxy when configuration changes
+  ansible.builtin.command:
+    cmd: docker compose up -d --force-recreate proxy
+    chdir: "{{ app_dir }}"
+  when:
+    - proxy_config.changed
+    - not ansible_check_mode
+  changed_when: true
+  tags:
+    - proxy

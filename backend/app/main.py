@@ -52,6 +52,8 @@ def root() -> dict[str, str]:
     return {
         "service": "training-backend",
         "status": "running",
+        "deployed_by": "ansible",
+        "version": "2.0.0",
     }
 
 

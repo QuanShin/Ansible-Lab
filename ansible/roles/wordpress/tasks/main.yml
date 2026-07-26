@@ -1,0 +1,12 @@
+- name: Deploy WordPress service
+  ansible.builtin.command:
+    cmd: docker compose up -d wordpress
+    chdir: "{{ app_dir }}"
+  register: wordpress_deploy
+  changed_when: >
+    'Created' in wordpress_deploy.stdout or
+    'Recreated' in wordpress_deploy.stdout or
+    'Started' in wordpress_deploy.stdout
+  when: not ansible_check_mode
+  tags:
+    - wordpress

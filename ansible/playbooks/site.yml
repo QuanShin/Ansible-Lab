@@ -1,0 +1,34 @@
+- name: Deploy full microservices stack
+  hosts: app_servers
+  become: true
+
+  vars_files:
+    - ../group_vars/all/main.yml
+    - ../group_vars/all/vault.yml
+
+  roles:
+    - role: common
+      tags:
+        - common
+        - deploy
+        - config
+
+    - role: database
+      tags:
+        - database
+
+    - role: backend
+      tags:
+        - backend
+
+    - role: frontend
+      tags:
+        - frontend
+
+    - role: wordpress
+      tags:
+        - wordpress
+
+    - role: proxy
+      tags:
+        - proxy

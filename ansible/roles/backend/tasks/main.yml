@@ -1,0 +1,27 @@
+- name: Create backend directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}/backend"
+    state: directory
+    mode: "0755"
+  tags:
+    - backend
+
+- name: Copy backend source
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../../backend/"
+    dest: "{{ app_dir }}/backend/"
+    mode: preserve
+  register: backend_source
+  tags:
+    - backend
+
+- name: Build and deploy backend
+  ansible.builtin.command:
+    cmd: docker compose up -d --build backend
+    chdir: "{{ app_dir }}"
+  when:
+    - backend_source.changed
+    - not ansible_check_mode
+  changed_when: true
+  tags:
+    - backend
